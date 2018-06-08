@@ -65,6 +65,7 @@ public class ComputerGraphics{
             }
 
             // Lights up the grid at a certain index
+            // TODO: how would you optimize this?  do we need this many if else statements?
             if (grid == 1)
                 canvas.drawRect((float)0, (float)0, width / (float)numColumns, height / (float)numRows, gridPaint);
             else if (grid == 2)
@@ -141,75 +142,40 @@ public class ComputerGraphics{
             else {
                 lose = true;
             }
-        }
+        }Î
         return false;
         */
         grid = gridIndex;
-        if (numTouches >= solution.size()) {
+        if (numTouches > solution.size()) {
             lose = true;
             gridPaint.setColor(Color.rgb(255, 0, 0));
             return false;
         }
+
         if (solution.get(numTouches - 1) == gridIndex) {
             if (numTouches == solution.size()) {
                 win = true;
             }
+
             gridPaint.setColor(Color.rgb(0, 0, 255));
             return true;
+        } else {
+            lose = true;
+            gridPaint.setColor(Color.rgb(255, 0, 0));
+            return false;
         }
-        return false;
+    }
+
+    public int findGridIndex(float x, float y, int numColumns, int numRows, int screenWidth, int screenHeight){
+        int indexX = (int)(x / (screenWidth / numColumns)) + 1;
+        int indexY = (int)(y / (screenHeight / numRows)) + 1;
+        return indexX + ((indexY - 1) * numColumns);
     }
 
     public void onTouch(float x, float y)
     {
-        if (x >= 0 && x <= width / (float)numColumns  && y >= 0 && y <= height / (float)numRows){
-            gridIndex = 1;
-        }
-        else if (x >= width / (float)numColumns && x <= width * 2 / (float)numColumns  && y >= 0 && y <= height / (float)numRows){
-            gridIndex = 2;
-        }
-        else if (x >= width * 2 / (float)numColumns && x <= width * 3 / (float)numColumns  && y >= 0 && y <= height / (float)numRows){
-            gridIndex = 3;
-        }
-        else if (x >= width * 3 / (float)numColumns && x <= width * 4 / (float)numColumns  && y >= 0 && y <= height / (float)numRows){
-            gridIndex = 4;
-        }
-        else if (x >= 0 && x <= width / (float)numColumns  && y >= height /(float)numRows && y <= height * 2 / (float)numRows){
-            gridIndex = 5;
-        }
-        else if (x >= width / (float)numColumns && x <= width * 2 / (float)numColumns  && y >= height /(float)numRows && y <= height * 2 / (float)numRows){
-            gridIndex = 6;
-        }
-        else if (x >= width * 2 / (float)numColumns && x <= width * 3 / (float)numColumns  && y >= height /(float)numRows && y <= height * 2 / (float)numRows){
-            gridIndex = 7;
-        }
-        else if (x >= width * 3 / (float)numColumns && x <= width * 4 / (float)numColumns  && y >= height /(float)numRows && y <= height * 2 / (float)numRows){
-            gridIndex = 8;
-        }
-        else if (x >= 0 && x <= width / (float)numColumns  && y >= height * 2 /(float)numRows && y <= height * 3 / (float)numRows){
-            gridIndex = 9;
-        }
-        else if (x >= width / (float)numColumns && x <= width * 2 / (float)numColumns  && y >= height * 2 /(float)numRows && y <= height * 3 / (float)numRows){
-            gridIndex = 10;
-        }
-        else if (x >= width * 2 / (float)numColumns && x <= width * 3 / (float)numColumns  && y >= height * 2 /(float)numRows && y <= height * 3 / (float)numRows){
-            gridIndex = 11;
-        }
-        else if (x >= width * 3 / (float)numColumns && x <= width * 4 / (float)numColumns  && y >= height * 2 /(float)numRows && y <= height * 3 / (float)numRows){
-            gridIndex = 12;
-        }
-        else if (x >= 0 && x <= width / (float)numColumns  && y >= height * 3 /(float)numRows && y <= height * 4 / (float)numRows){
-            gridIndex = 13;
-        }
-        else if (x >= width / (float)numColumns && x <= width * 2 / (float)numColumns  && y >= height * 3 /(float)numRows && y <= height * 4 / (float)numRows){
-            gridIndex = 14;
-        }
-        else if (x >= width * 2 / (float)numColumns && x <= width * 3 / (float)numColumns  && y >= height * 3 /(float)numRows && y <= height * 4 / (float)numRows){
-            gridIndex = 15;
-        }
-        else if (x >= width * 3 / (float)numColumns && x <= width * 4 / (float)numColumns  && y >= height * 3 /(float)numRows && y <= height * 4 / (float)numRows){
-            gridIndex = 16;
-        }
+        gridIndex = findGridIndex(x, y, this.numColumns, this.numRows, this.width, this.height);
+
         if (simulationFinished) {
             numTouches++;
             validate();
