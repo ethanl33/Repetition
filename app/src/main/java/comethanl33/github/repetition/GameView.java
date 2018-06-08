@@ -14,7 +14,7 @@ import android.view.SurfaceHolder;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
-    private ComputerGraphics computerGraphics;
+    private PlayRepetition playRepetition;
 
     private float previousX = -1;
     private float previousY = -1;
@@ -36,7 +36,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
-        computerGraphics = new ComputerGraphics(4, 4, 3);
+        playRepetition = new PlayRepetition(4, 4, 3);
         thread.setRunning(true);
         thread.start();
     }
@@ -59,9 +59,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update()
     {
-        computerGraphics.update();
-        if (computerGraphics.isWinner() || computerGraphics.isLoser())
-        {
+        playRepetition.update();
+        if (playRepetition.isWinner() || playRepetition.isLoser()) {
             Context context = getContext();
             context.startActivity(new Intent(context, HomeScreen.class));
         }
@@ -73,7 +72,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null)
         {
-            computerGraphics.draw(canvas);
+            playRepetition.draw(canvas);
         }
     }
 
@@ -86,7 +85,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         float y = e.getY();
 
         if(previousX != x || previousY != y)
-            computerGraphics.onTouch(x, y);
+            playRepetition.onTouch(x, y);
 
         previousX = x;
         previousY = y;
