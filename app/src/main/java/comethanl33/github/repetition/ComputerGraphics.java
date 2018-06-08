@@ -141,23 +141,28 @@ public class ComputerGraphics{
             else {
                 lose = true;
             }
-        }
+        }Î
         return false;
         */
         grid = gridIndex;
-        if (numTouches >= solution.size()) {
+        if (numTouches > solution.size()) {
             lose = true;
             gridPaint.setColor(Color.rgb(255, 0, 0));
             return false;
         }
+
         if (solution.get(numTouches - 1) == gridIndex) {
             if (numTouches == solution.size()) {
                 win = true;
             }
+            
             gridPaint.setColor(Color.rgb(0, 0, 255));
             return true;
+        } else {
+            lose = true;
+            gridPaint.setColor(Color.rgb(255, 0, 0));
+            return false;
         }
-        return false;
     }
 
     public void onTouch(float x, float y)
