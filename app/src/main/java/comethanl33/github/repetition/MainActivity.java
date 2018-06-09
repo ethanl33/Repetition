@@ -21,25 +21,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(new GameView(this));
 
-        SharedPreferences prefs = this.getSharedPreferences("Repetition", Context.MODE_PRIVATE);
-        highScore = prefs.getInt("highScore", 1);
-
-        Intent mIntent = getIntent();
-        level = mIntent.getIntExtra("currentScore", 1);
-
-        if (highScore > level) {
-            //tvHighScore.setText(Integer.toString(highScore));
-        }
-        else {
-            highScore = level;
-            //tvHighScore.setText(Integer.toString(highScore));
-            prefs.edit().putInt("highScore", highScore).apply();
-        }
-
-    }
-    public MainActivity()
-    {
-
     }
 
     @Override
@@ -49,11 +30,6 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, HomeScreen.class);
         startActivity(intent);
         finish();
-    }
-
-    public int getLevel()
-    {
-        return level;
     }
 
 

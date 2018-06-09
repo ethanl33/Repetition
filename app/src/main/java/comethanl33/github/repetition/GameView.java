@@ -2,6 +2,7 @@ package comethanl33.github.repetition;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
@@ -16,15 +17,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
     private PlayRepetition playRepetition;
-    private MainActivity mainActivity;
+
+    int score; //score holder
+    int highScore;
+    SharedPreferences sharedPreferences;
 
 
     public GameView(Context context) {
         super(context);
+
+        score = 0;
+        sharedPreferences = context.getSharedPreferences("Repetition", Context.MODE_PRIVATE);
+        highScore = sharedPreferences.getInt("score",1);
+
         getHolder().addCallback(this);
 
         thread = new MainThread(getHolder(), this);
-        mainActivity = new MainActivity();
         setFocusable(true);
     }
 
@@ -35,7 +43,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        playRepetition = new PlayRepetition(4, 4, mainActivity.getLevel());
+        playRepetition = new PlayRepetition(4, 4);
         thread.setRunning(true);
         thread.start();
     }
@@ -57,17 +65,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         playRepetition.update();
+        score = playRepetition.getLEVEL();
 
         if (playRepetition.isLoser()) {
-            //mainActivity.enterCurrentScore(-1);
             //enter high score
+            if (highScore < score)
+                highScore = score;
+
+            SharedPreferences.Editor e = sharedPreferences.edit();
+            e.putInt("score", highScore);
+            e.apply();
+
             Context context = getContext();
             context.startActivity(new Intent(context, HomeScreen.class));
-        }
-        if (playRepetition.isWinner()) {
-            //mainActivity.enterCurrentScore(mainActivity.getCurrentScore() + 1);
-            Context context = getContext();
-            context.startActivity(new Intent(context, WinScreen.class));
         }
     }
 
@@ -109,4 +119,5 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 return super.onTouchEvent(e);
         }
     }
+
 }

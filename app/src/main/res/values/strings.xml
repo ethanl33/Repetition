@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Repetition</string>
     <string name="button">Start Game</string>
-    <string name="high_score">High Score</string>
+    <string name="high_score">High Scores</string>
 </resources>

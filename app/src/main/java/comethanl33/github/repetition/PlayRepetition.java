@@ -22,14 +22,15 @@ public class PlayRepetition extends Activity {
     private int prevGrid = -1;
     private int gridIndex;
 
-    private int currentLevel;
-    private int LEVEL;
+    private int currentLevel = 1;
+    private int LEVEL = 1;
     private int numTouches = 0;
 
     private boolean win = false;
     private boolean lose = false;
 
     private boolean simulationFinished = false;
+    private boolean drawFinished = false;
     private List<Integer> solution = new ArrayList<>();
 
     private int numColumns, numRows;
@@ -40,9 +41,7 @@ public class PlayRepetition extends Activity {
     private Paint gridPaint = new Paint();
 
 
-    public PlayRepetition(int cols, int rows, int level) {
-        currentLevel = level;
-        LEVEL = level;
+    public PlayRepetition(int cols, int rows) {
         numColumns = cols;
         numRows = rows;
 
@@ -55,9 +54,9 @@ public class PlayRepetition extends Activity {
         {
 
             if(simulationFinished)
-            {
                 canvas.drawColor(Color.BLACK); // resets the canvas to allow user to start
-            }
+            else
+                gridPaint.setColor(Color.rgb(255, 255, 255));
 
             // Vertical Lines
             for (int i = 1; i < numColumns; i++) {
@@ -68,7 +67,7 @@ public class PlayRepetition extends Activity {
             for (int i = 1; i < numRows; i++) {
                 canvas.drawLine(0, height * i / numRows, width, height * i / numRows, linePaint);
             }
-
+             drawFinished = false;
 
             // Lights up the grid at a certain index
             // TODO: how would you optimize this?  do we need this many if else statements?
@@ -113,6 +112,7 @@ public class PlayRepetition extends Activity {
                     right = (width * 4 / (float)numColumns);
                 }
                 canvas.drawRect(left, top, right, bottom, gridPaint);
+                drawFinished = true;
             }
             grid = -1;
         }
@@ -120,6 +120,13 @@ public class PlayRepetition extends Activity {
 
     public void update()
     {
+        if (isWinner() && drawFinished)
+        {
+            LEVEL++;
+            currentLevel = LEVEL;
+            simulationFinished = false;
+            win = false;
+        }
         if (currentLevel > 0)
         {
             grid = (int)((Math.random() * 16) + 1);
@@ -137,23 +144,23 @@ public class PlayRepetition extends Activity {
 
     }
 
-    public boolean validate()
+    public void validate()
     {
         grid = gridIndex;
+
         if (numTouches > solution.size()) {
             lose = true;
             gridPaint.setColor(Color.rgb(255, 0, 0));
-            return false;
         }
         if (solution.get(numTouches - 1) == gridIndex) {
+            gridPaint.setColor(Color.rgb(0, 0, 255));
             if (numTouches == solution.size()) {
                 win = true;
             }
-            return true;
-        } else {
+        }
+        else {
             lose = true;
             gridPaint.setColor(Color.rgb(255, 0, 0));
-            return false;
         }
     }
 
@@ -190,6 +197,11 @@ public class PlayRepetition extends Activity {
     public boolean isLoser()
     {
         return lose;
+    }
+
+    public int getLEVEL()
+    {
+        return LEVEL;
     }
 
 }
