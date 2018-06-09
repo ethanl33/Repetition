@@ -1,12 +1,17 @@
 package comethanl33.github.repetition;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class MainActivity extends Activity {
 
+    private int level = 1;
+    private int highScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,8 +21,42 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(new GameView(this));
 
+        SharedPreferences prefs = this.getSharedPreferences("Repetition", Context.MODE_PRIVATE);
+        highScore = prefs.getInt("highScore", 1);
+
+        Intent mIntent = getIntent();
+        level = mIntent.getIntExtra("currentScore", 1);
+
+        if (highScore > level) {
+            //tvHighScore.setText(Integer.toString(highScore));
+        }
+        else {
+            highScore = level;
+            //tvHighScore.setText(Integer.toString(highScore));
+            prefs.edit().putInt("highScore", highScore).apply();
+        }
 
     }
+    public MainActivity()
+    {
+
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //super.onBackPressed();  // optional depending on your needs
+        Intent intent = new Intent(this, HomeScreen.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public int getLevel()
+    {
+        return level;
+    }
+
+
 
 
 }

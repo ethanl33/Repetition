@@ -1,5 +1,7 @@
 package comethanl33.github.repetition;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,17 +16,18 @@ import java.util.List;
  */
 
 // 4 x 4 grid that will light up one grid block at a time
-public class PlayRepetition {
+public class PlayRepetition extends Activity {
 
     private int grid = 0;
     private int prevGrid = -1;
     private int gridIndex;
 
-    private int level;
+    private int currentLevel;
+    private int LEVEL;
     private int numTouches = 0;
 
-    private boolean win;
-    private boolean lose;
+    private boolean win = false;
+    private boolean lose = false;
 
     private boolean simulationFinished = false;
     private List<Integer> solution = new ArrayList<>();
@@ -38,7 +41,8 @@ public class PlayRepetition {
 
 
     public PlayRepetition(int cols, int rows, int level) {
-        this.level = level;
+        currentLevel = level;
+        LEVEL = level;
         numColumns = cols;
         numRows = rows;
 
@@ -116,17 +120,20 @@ public class PlayRepetition {
 
     public void update()
     {
-        if (level > 0)
+        if (currentLevel > 0)
         {
             grid = (int)((Math.random() * 16) + 1);
             while (prevGrid == grid)
                 grid = (int)((Math.random() * 16) + 1);
             solution.add(grid);
-            level--;
+            currentLevel--;
             prevGrid = grid;
         }
-        if (level == 0)
+        if (currentLevel == 0)
+        {
             simulationFinished = true;
+            currentLevel--;
+        }
 
     }
 
@@ -138,13 +145,10 @@ public class PlayRepetition {
             gridPaint.setColor(Color.rgb(255, 0, 0));
             return false;
         }
-
         if (solution.get(numTouches - 1) == gridIndex) {
             if (numTouches == solution.size()) {
                 win = true;
             }
-
-            gridPaint.setColor(Color.rgb(0, 0, 255));
             return true;
         } else {
             lose = true;
@@ -187,4 +191,5 @@ public class PlayRepetition {
     {
         return lose;
     }
+
 }
