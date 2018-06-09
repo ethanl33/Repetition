@@ -10,15 +10,16 @@ import android.widget.TextView;
 
 public class HomeScreen extends AppCompatActivity {
 
-    TextView textView,textView2,textView3,textView4;
+    TextView textView;
     SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        textView = (TextView) findViewById(R.id.textView);
+        textView = findViewById(R.id.textView);
 
         sharedPreferences  = getSharedPreferences("Repetition", Context.MODE_PRIVATE);
 

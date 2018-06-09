@@ -1,7 +1,6 @@
 package comethanl33.github.repetition;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +8,7 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 
 /**
@@ -30,7 +30,6 @@ public class PlayRepetition extends Activity {
     private boolean lose = false;
 
     private boolean simulationFinished = false;
-    private boolean drawFinished = false;
     private List<Integer> solution = new ArrayList<>();
 
     private int numColumns, numRows;
@@ -49,10 +48,9 @@ public class PlayRepetition extends Activity {
         gridPaint.setColor(Color.rgb(255, 255, 255));
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas) throws InterruptedException {
         if (canvas != null)
         {
-
             if(simulationFinished)
                 canvas.drawColor(Color.BLACK); // resets the canvas to allow user to start
             else
@@ -67,7 +65,10 @@ public class PlayRepetition extends Activity {
             for (int i = 1; i < numRows; i++) {
                 canvas.drawLine(0, height * i / numRows, width, height * i / numRows, linePaint);
             }
-             drawFinished = false;
+
+            //drawing the score on the game screen
+            linePaint.setTextSize(30);
+            canvas.drawText("Level:" + LEVEL,100,50,linePaint);
 
             // Lights up the grid at a certain index
             // TODO: how would you optimize this?  do we need this many if else statements?
@@ -112,7 +113,6 @@ public class PlayRepetition extends Activity {
                     right = (width * 4 / (float)numColumns);
                 }
                 canvas.drawRect(left, top, right, bottom, gridPaint);
-                drawFinished = true;
             }
             grid = -1;
         }
@@ -120,7 +120,7 @@ public class PlayRepetition extends Activity {
 
     public void update()
     {
-        if (isWinner() && drawFinished)
+        if (isWinner())
         {
             LEVEL++;
             currentLevel = LEVEL;

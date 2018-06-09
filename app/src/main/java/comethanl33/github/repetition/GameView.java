@@ -18,15 +18,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
     private PlayRepetition playRepetition;
 
-    int score; //score holder
-    int highScore;
+    private int score; //score holder
+    private int highScore;
     SharedPreferences sharedPreferences;
+
+    private static int ROWS = 4;
+    private static int COLS = 4;
 
 
     public GameView(Context context) {
         super(context);
 
-        score = 0;
+        score = 1;
         sharedPreferences = context.getSharedPreferences("Repetition", Context.MODE_PRIVATE);
         highScore = sharedPreferences.getInt("score",1);
 
@@ -43,7 +46,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        playRepetition = new PlayRepetition(4, 4);
+        playRepetition = new PlayRepetition(ROWS, COLS);
         thread.setRunning(true);
         thread.start();
     }
@@ -67,7 +70,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         playRepetition.update();
         score = playRepetition.getLEVEL();
 
-        if (playRepetition.isLoser()) {
+        if (playRepetition.isLoser() || playRepetition.isWinner()) {
             //enter high score
             if (highScore < score)
                 highScore = score;
@@ -76,8 +79,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             e.putInt("score", highScore);
             e.apply();
 
-            Context context = getContext();
-            context.startActivity(new Intent(context, HomeScreen.class));
+            if (playRepetition.isLoser()) {
+                Context context = getContext();
+                context.startActivity(new Intent(context, HomeScreen.class));
+            }
         }
     }
 
@@ -85,7 +90,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            playRepetition.draw(canvas);
+            try {
+                thread.sleep(375);// 1000 milliseconds is one second.
+            } catch (InterruptedException ex) {
+                thread.currentThread().interrupt();
+            }
+            try {
+                playRepetition.draw(canvas);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -112,8 +126,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 //Log.d(DEBUG_TAG, "Action was CANCEL");
                 return true;
             case (MotionEvent.ACTION_OUTSIDE):
-                //Log.d(DEBUG_TAG, "Movement occurred outside bounds " +
-                        //"of current screen element");
+                //Log.d(DEBUG_TAG, "Movement occurred outside bounds " + "of current screen element");
                 return true;
             default:
                 return super.onTouchEvent(e);

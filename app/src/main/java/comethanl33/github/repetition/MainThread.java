@@ -2,6 +2,7 @@ package comethanl33.github.repetition;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+
 /**
  * Created by Ethan on 6/6/2018.
  */
@@ -12,7 +13,7 @@ public class MainThread extends Thread {
     private boolean running;
     public static Canvas canvas;
 
-    private int targetFPS = 1;
+    private int targetFPS = 25;
     private double averageFPS;
 
     public MainThread(SurfaceHolder surfaceHolder, GameView gameView)
