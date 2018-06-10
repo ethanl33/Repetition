@@ -52,7 +52,7 @@ public class PlayRepetition extends Activity {
         if (canvas != null)
         {
             if(simulationFinished)
-                canvas.drawColor(Color.BLACK); // resets the canvas to allow user to start
+                canvas.drawColor(Color.BLACK); // resets the canvas to allow user to start #001933
             else
                 gridPaint.setColor(Color.rgb(255, 255, 255));
 
@@ -67,8 +67,8 @@ public class PlayRepetition extends Activity {
             }
 
             //drawing the score on the game screen
-            linePaint.setTextSize(30);
-            canvas.drawText("Level:" + LEVEL,100,50,linePaint);
+            linePaint.setTextSize(37);
+            canvas.drawText("Level:" + LEVEL,100,50, linePaint);
 
             // Lights up the grid at a certain index
             // TODO: how would you optimize this?  do we need this many if else statements?
@@ -116,6 +116,7 @@ public class PlayRepetition extends Activity {
             }
             grid = -1;
         }
+
     }
 
     public void update()
@@ -199,9 +200,9 @@ public class PlayRepetition extends Activity {
         return lose;
     }
 
-    public int getLEVEL()
-    {
+    public int getLEVEL() {
         return LEVEL;
     }
+
 
 }

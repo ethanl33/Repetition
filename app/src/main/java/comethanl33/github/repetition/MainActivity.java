@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(new GameView(this));
+
     }
 
     @Override

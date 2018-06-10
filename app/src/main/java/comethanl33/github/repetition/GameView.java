@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -17,6 +19,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
     private PlayRepetition playRepetition;
+    private SurfaceHolder surfaceHolder;
+    private Paint paint = new Paint();
+    private String text;
 
     private int score; //score holder
     private int highScore;
@@ -37,6 +42,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
+        paint.setColor(Color.rgb(255, 255, 255));
     }
 
     @Override
@@ -77,12 +83,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             SharedPreferences.Editor e = sharedPreferences.edit();
             e.putInt("score", highScore);
+            e.putInt("lastScore", score);
             e.apply();
 
             if (playRepetition.isLoser()) {
                 Context context = getContext();
                 context.startActivity(new Intent(context, HomeScreen.class));
             }
+
         }
     }
 
@@ -91,7 +99,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             try {
-                thread.sleep(375);// 1000 milliseconds is one second.
+                thread.sleep(430);// 1000 milliseconds is one second.
             } catch (InterruptedException ex) {
                 thread.currentThread().interrupt();
             }
@@ -100,6 +108,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if (playRepetition.isWinner() || playRepetition.isLoser()){
+                paint.setTextSize(150);
+                paint.setTextAlign(Paint.Align.CENTER);
+
+                if (playRepetition.isWinner())
+                    text = "Not Bad!";
+                if (playRepetition.isLoser())
+                    text = "You Suck!";
+
+                int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+                canvas.drawText(text,canvas.getWidth() / 2, yPos, paint);
+            }
+            surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
 
