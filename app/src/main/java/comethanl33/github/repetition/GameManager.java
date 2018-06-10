@@ -16,7 +16,7 @@ import java.util.Timer;
  */
 
 // 4 x 4 grid that will light up one grid block at a time
-public class PlayRepetition extends Activity {
+public class GameManager extends Activity {
 
     private int grid = 0;
     private int prevGrid = -1;
@@ -40,7 +40,7 @@ public class PlayRepetition extends Activity {
     private Paint gridPaint = new Paint();
 
 
-    public PlayRepetition(int cols, int rows) {
+    public GameManager(int cols, int rows) {
         numColumns = cols;
         numRows = rows;
 
@@ -126,7 +126,7 @@ public class PlayRepetition extends Activity {
             LEVEL++;
             currentLevel = LEVEL;
             simulationFinished = false;
-            win = false;
+            //win = false;
         }
         if (currentLevel > 0)
         {
@@ -200,9 +200,13 @@ public class PlayRepetition extends Activity {
         return lose;
     }
 
-    public int getLEVEL() {
+    public int getLEVEL()
+    {
         return LEVEL;
     }
 
-
+    public void setWinToFalse()
+    {
+        win = false;
+    }
 }
