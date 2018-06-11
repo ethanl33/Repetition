@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class GameManager extends Activity {
     private int height = getScreenHeight();
     private Paint linePaint = new Paint();
     private Paint gridPaint = new Paint();
+    private Paint warningPaint = new Paint();
 
 
     public GameManager(int cols, int rows) {
@@ -46,6 +48,7 @@ public class GameManager extends Activity {
 
         linePaint.setColor(Color.rgb(255, 255, 255));
         gridPaint.setColor(Color.rgb(255, 255, 255));
+        warningPaint.setColor(Color.rgb(255, 0, 0));
     }
 
     public void draw(Canvas canvas) throws InterruptedException {
@@ -56,6 +59,7 @@ public class GameManager extends Activity {
             else
                 gridPaint.setColor(Color.rgb(255, 255, 255));
 
+
             // Vertical Lines
             for (int i = 1; i < numColumns; i++) {
                 canvas.drawLine(width * i / numColumns, 0, width * i / numColumns, height, linePaint);
@@ -65,6 +69,8 @@ public class GameManager extends Activity {
             for (int i = 1; i < numRows; i++) {
                 canvas.drawLine(0, height * i / numRows, width, height * i / numRows, linePaint);
             }
+
+
 
             //drawing the score on the game screen
             linePaint.setTextSize(37);
@@ -114,6 +120,11 @@ public class GameManager extends Activity {
                 }
                 canvas.drawRect(left, top, right, bottom, gridPaint);
             }
+            warningPaint.setTextSize(200);
+            warningPaint.setTextAlign(Paint.Align.CENTER);
+            int yPos = (int) ((canvas.getHeight() / 2) - ((warningPaint.descent() + warningPaint.ascent()) / 2));
+            if (!simulationFinished)
+                canvas.drawText("WATCH!",canvas.getWidth() / 2, yPos, warningPaint);
             grid = -1;
         }
 
@@ -128,6 +139,11 @@ public class GameManager extends Activity {
             simulationFinished = false;
             //win = false;
         }
+        if (currentLevel == 0)
+        {
+            simulationFinished = true;
+            currentLevel--;
+        }
         if (currentLevel > 0)
         {
             grid = (int)((Math.random() * 16) + 1);
@@ -137,17 +153,13 @@ public class GameManager extends Activity {
             currentLevel--;
             prevGrid = grid;
         }
-        if (currentLevel == 0)
-        {
-            simulationFinished = true;
-            currentLevel--;
-        }
 
     }
 
     public void validate()
     {
-        grid = gridIndex;
+        if (simulationFinished)
+            grid = gridIndex;
 
         if (numTouches > solution.size()) {
             lose = true;
@@ -209,4 +221,5 @@ public class GameManager extends Activity {
     {
         win = false;
     }
+
 }
