@@ -17,32 +17,44 @@ import android.view.SurfaceHolder;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
+    private GameView gameView;
     private MainThread thread;
     private GameManager gameManager;
     private SurfaceHolder surfaceHolder;
     private Paint paint = new Paint();
-    private String text;
 
     private int score; //score holder
     private int highScore;
     SharedPreferences sharedPreferences;
 
-    private static int ROWS = 4;
-    private static int COLS = 4;
+    private int rows;
+    private int cols;
 
+    private int rowsAndCols;
 
     public GameView(Context context) {
         super(context);
 
         score = 1;
         sharedPreferences = context.getSharedPreferences("Repetition", Context.MODE_PRIVATE);
-        highScore = sharedPreferences.getInt("score",1);
+
+        rows = sharedPreferences.getInt("rowsAndCols", 4);
+        cols = sharedPreferences.getInt("rowsAndCols", 4);
+        rowsAndCols = sharedPreferences.getInt("rowsAndCols", 4);
+
+        if (rowsAndCols == 4)
+            highScore = sharedPreferences.getInt("best4x4",1);
+        else if (rowsAndCols == 3)
+            highScore = sharedPreferences.getInt("best3x3",1);
+        else
+            highScore = sharedPreferences.getInt("best2x2",1);
 
         getHolder().addCallback(this);
 
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
         paint.setColor(Color.rgb(255, 255, 255));
+        getHolder().setFormat(0x00000004);
     }
 
     @Override
@@ -52,7 +64,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        gameManager = new GameManager(ROWS, COLS);
+        gameManager = new GameManager(cols, rows);
         thread.setRunning(true);
         thread.start();
     }
@@ -74,7 +86,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         gameManager.update();
-        score = gameManager.getLEVEL();
+        score = gameManager.getLevel();
 
         if (gameManager.isLoser() || gameManager.isWinner()) {
             //enter high score
@@ -82,19 +94,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 highScore = score;
 
             SharedPreferences.Editor e = sharedPreferences.edit();
-            e.putInt("score", highScore);
-            e.putInt("lastScore", score);
+            if (rowsAndCols == 4)
+            {
+                e.putInt("best4x4", highScore);
+                e.putInt("last4x4", score);
+            }
+            else if (rowsAndCols == 3)
+            {
+                e.putInt("best3x3", highScore);
+                e.putInt("last3x3", score);
+            }
+            else
+            {
+                e.putInt("best2x2", highScore);
+                e.putInt("last2x2", score);
+            }
             e.apply();
+
             if (gameManager.isWinner())
             {
                 gameManager.setWinToFalse();
                 try {
-                    thread.sleep(700);// 1000 milliseconds is one second.
+                    thread.sleep(800);// 1000 milliseconds is one second.
                 } catch (InterruptedException ex) {
                     thread.currentThread().interrupt();
                 }
             }
-
 
             if (gameManager.isLoser()) {
                 Context context = getContext();
@@ -104,46 +129,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    //TODO: Lag after user touch is caused by this sleep statement, figure out a way to oly call sleep when the user is watching the simulation
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
             try {
-                thread.sleep(650);// 1000 milliseconds is one second.
+                thread.sleep(260);// 1000 milliseconds is one second.
             } catch (InterruptedException ex) {
                 thread.currentThread().interrupt();
             }
+
             try {
                 gameManager.draw(canvas);
+                gameManager.drawSimulation(canvas);
+                gameManager.drawInput(canvas);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (gameManager.isWinner() || gameManager.isLoser()){
-                paint.setTextSize(150);
-                paint.setTextAlign(Paint.Align.CENTER);
-
-                if (gameManager.isWinner())
-                {
-                    if (gameManager.getLEVEL() <= 2)
-                        text = "Beginner's Luck!";
-                    else if (gameManager.getLEVEL() <= 4)
-                        text = "Not Bad!";
-                    else if (gameManager.getLEVEL() <= 6)
-                        text = "Wow!";
-                    else if (gameManager.getLEVEL() <= 8)
-                        text = "Keep Going!";
-                    else if (gameManager.getLEVEL() <= 10)
-                        text = "Unbelievable!";
-                    else
-                        text = "Legendary!";
-                }
-                if (gameManager.isLoser())
-                    text = "Maybe Next Time!";
-
-                int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
-                canvas.drawText(text,canvas.getWidth() / 2, yPos, paint);
-            }
             surfaceHolder.unlockCanvasAndPost(canvas);
+
         }
     }
 
@@ -157,9 +162,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         switch (action) {
             case (MotionEvent.ACTION_DOWN): // Called when the user first presses the touchscreen.
+            {
                 //Log.d(DEBUG_TAG, "Action was DOWN");
                 gameManager.onTouch(x, y);
                 return true;
+            }
+
             case (MotionEvent.ACTION_MOVE):
                 //Log.d(DEBUG_TAG, "Action was MOVE");
                 return true;
@@ -176,5 +184,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 return super.onTouchEvent(e);
         }
     }
+
 
 }

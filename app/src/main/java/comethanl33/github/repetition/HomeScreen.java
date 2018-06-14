@@ -3,18 +3,24 @@ package comethanl33.github.repetition;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 public class HomeScreen extends AppCompatActivity {
 
     TextView best, last;
     SharedPreferences sharedPreferences;
+    RadioButton gameMode;
+    String selectedGameMode;
+    int rowsAndCols;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +32,49 @@ public class HomeScreen extends AppCompatActivity {
         last = findViewById(R.id.lastScore);
 
         sharedPreferences  = getSharedPreferences("Repetition", Context.MODE_PRIVATE);
+        SharedPreferences.Editor e = sharedPreferences.edit();
 
         //setting the values to the textViews
-        best.setText("Best: " + sharedPreferences.getInt("score",1));
-        last.setText("Last: " + sharedPreferences.getInt("lastScore", 1) );
-        //textView.setTextColor(Color.parseColor("#FFFFFF"));
-        //title.setTextColor(Color.parseColor("#FFFFFF"));
+        //best.setTextColor(Color.rgb(238, 144, 137)); #ee9089
+
+        best.setText("Best: " + sharedPreferences.getInt("best4x4",1));
+        last.setText("Last: " + sharedPreferences.getInt("last4x4", 1) );
+
+        selectedGameMode = sharedPreferences.getString("selectedGameMode", "");
+        if (selectedGameMode.equals(""))
+        {
+            rowsAndCols = 4;
+            best.setText("Best: " + sharedPreferences.getInt("best4x4",1));
+            last.setText("Last: " + sharedPreferences.getInt("last4x4", 1) );
+        }
+        else
+        {
+            if (selectedGameMode.equals("2 x 2"))
+            {
+                rowsAndCols = 2;
+                best.setText("Best: " + sharedPreferences.getInt("best2x2",1));
+                last.setText("Last: " + sharedPreferences.getInt("last2x2", 1) );
+            }
+
+            else if (selectedGameMode.equals("3 x 3"))
+            {
+                rowsAndCols = 3;
+                best.setText("Best: " + sharedPreferences.getInt("best3x3",1));
+                last.setText("Last: " + sharedPreferences.getInt("last3x3", 1) );
+            }
+
+            else
+            {
+                rowsAndCols = 4;
+                best.setText("Best: " + sharedPreferences.getInt("best4x4",1));
+                last.setText("Last: " + sharedPreferences.getInt("last4x4", 1) );
+            }
+
+        }
+
+
+        e.putInt("rowsAndCols", rowsAndCols);
+        e.apply();
     }
 
     @Override
@@ -62,10 +105,11 @@ public class HomeScreen extends AppCompatActivity {
         }
     }
 
-    public void startGame(View view)
+    public void chooseGameMode(View view)
     {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, GameModeManager.class);
         startActivity(intent);
     }
+
 
 }
