@@ -20,7 +20,9 @@ public class HomeScreen extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     RadioButton gameMode;
     String selectedGameMode;
+    String selectedPaint;
     int rowsAndCols;
+    //String paint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +74,11 @@ public class HomeScreen extends AppCompatActivity {
 
         }
 
+        selectedPaint = sharedPreferences.getString("selectedPaint", "Blue");
+
 
         e.putInt("rowsAndCols", rowsAndCols);
+        e.putString("paint", selectedPaint);
         e.apply();
     }
 

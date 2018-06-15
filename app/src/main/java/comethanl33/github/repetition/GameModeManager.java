@@ -15,15 +15,19 @@ public class GameModeManager extends AppCompatActivity {
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    private Button confirmation;
+    private RadioGroup radioGroup2;
+    private RadioButton radioButton2;
     private Intent intent;
 
     private String str = "";
     private int selectedId;
+    private int selectedId2;
     private int num;
+    private String paint;
+    private String paintStr = "";
     SharedPreferences sharedPreferences;
 
-    RadioButton b1, b2, b3;
+    RadioButton b1, b2, b3, b4, b5, b6;
 
 
     @Override
@@ -51,6 +55,22 @@ public class GameModeManager extends AppCompatActivity {
         }
 
 
+        b4 = findViewById(R.id.radioButton4);
+        b5 = findViewById(R.id.radioButton5);
+        b6 = findViewById(R.id.radioButton6);
+        paint = sharedPreferences.getString("paint", "Blue");
+        if (paint.equals("Pink"))
+        {
+            b6.setChecked(true);
+        }
+        else if (paint.equals("Green"))
+        {
+            b5.setChecked(true);
+        }
+        else
+        {
+            b4.setChecked(true);
+        }
 
         addListenerOnButton();
     }
@@ -72,6 +92,19 @@ public class GameModeManager extends AppCompatActivity {
             else
                 e.putString("selectedGameMode", "4 x 4");
         }
+
+        if(!paintStr.equals(""))
+            e.putString("selectedPaint", paintStr);
+        else
+        {
+            if (b4.isChecked())
+                e.putString("selectedPaint", "Blue");
+            else if (b5.isChecked())
+                e.putString("selectedPaint", "Green");
+            else
+                e.putString("selectedPaint", "Pink");
+        }
+
         e.apply();
 
 
@@ -79,13 +112,51 @@ public class GameModeManager extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        //super.onBackPressed();  // optional depending on your needs
+        intent = new Intent(this, HomeScreen.class);
+
+        SharedPreferences.Editor e = sharedPreferences.edit();
+
+        if (!str.equals(""))
+            e.putString("selectedGameMode", str);
+        else
+        {
+            if (b1.isChecked())
+                e.putString("selectedGameMode", "2 x 2");
+            else if (b2.isChecked())
+                e.putString("selectedGameMode", "3 x 3");
+            else
+                e.putString("selectedGameMode", "4 x 4");
+        }
+
+
+        if(!paintStr.equals(""))
+            e.putString("selectedPaint", paintStr);
+        else
+        {
+            if (b4.isChecked())
+                e.putString("selectedPaint", "Blue");
+            else if (b5.isChecked())
+                e.putString("selectedPaint", "Green");
+            else
+                e.putString("selectedPaint", "Pink");
+        }
+
+        e.apply();
+        startActivity(intent);
+        finish();
+    }
+
     public void addListenerOnButton() {
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        confirmation = (Button) findViewById(R.id.button);
+        radioGroup2 = (RadioGroup) findViewById(R.id.radioGroup2);
 
 
-        confirmation.setOnClickListener(new View.OnClickListener()
+        radioGroup.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
@@ -99,10 +170,29 @@ public class GameModeManager extends AppCompatActivity {
 
                 str = (String) radioButton.getText();
 
-                Toast.makeText(GameModeManager.this,
-                        radioButton.getText(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(GameModeManager.this,
+                        //radioButton.getText(), Toast.LENGTH_SHORT).show();
 
             }
 
         });
+
+        radioGroup2.setOnClickListener(new View.OnClickListener()
+        {
+
+            @Override
+            public void onClick(View v) {
+
+                // get selected radio button from radioGroup
+                selectedId2 = radioGroup2.getCheckedRadioButtonId();
+
+                // find the radiobutton by returned id
+                radioButton2 = (RadioButton) findViewById(selectedId2);
+
+                paintStr = (String) radioButton2.getText();
+
+            }
+
+        });
+
 }}

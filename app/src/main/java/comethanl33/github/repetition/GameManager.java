@@ -1,6 +1,8 @@
 package comethanl33.github.repetition;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -45,12 +47,18 @@ public class GameManager extends Activity{
 
     private String text;
 
+    private int r, g, b;
+
     private float[] coordinates = new float[4];
 
 
-    public GameManager(int cols, int rows) {
+    public GameManager(int cols, int rows, int r, int g, int b) {
         numColumns = cols;
         numRows = rows;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+
 
         background.setColor(Color.rgb(255, 255, 255));
         gridColor.setColor(Color.rgb(255, 255, 255));
@@ -109,7 +117,7 @@ public class GameManager extends Activity{
         }
 
         if (win || lose){
-            paint.setTextSize(150);
+            paint.setTextSize(100);
             paint.setTextAlign(Paint.Align.CENTER);
 
             if (win)
@@ -176,7 +184,7 @@ public class GameManager extends Activity{
             gridColor.setColor(Color.rgb(255, 0, 0));
         }
         if (solutions.get(numTouches - 1) == gridIndex) {
-            gridColor.setColor(Color.rgb(0, 0, 255));
+            gridColor.setColor(Color.rgb(r, g, b));
             if (numTouches == solutions.size()) {
                 win = true;
             }

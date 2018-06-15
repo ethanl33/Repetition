@@ -22,6 +22,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameManager gameManager;
     private SurfaceHolder surfaceHolder;
     private Paint paint = new Paint();
+    private String paintStr;
+    private int r, g, b;
 
     private int score; //score holder
     private int highScore;
@@ -51,6 +53,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         getHolder().addCallback(this);
 
+        paintStr = sharedPreferences.getString("paint", "Blue");
+        if (paintStr.equals("Pink"))
+        {
+            r = 255;
+            g = 20;
+            b = 147;
+        }
+        else if (paintStr.equals("Green"))
+        {
+            r = 0;
+            g = 255;
+            b = 0;
+        }
+        else
+        {
+            r = 0;
+            g = 0;
+            b = 255;
+        }
+
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
         paint.setColor(Color.rgb(255, 255, 255));
@@ -64,7 +86,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        gameManager = new GameManager(cols, rows);
+        gameManager = new GameManager(cols, rows, r, g, b);
         thread.setRunning(true);
         thread.start();
     }
