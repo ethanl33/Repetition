@@ -3,6 +3,7 @@ package comethanl33.github.repetition;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +40,7 @@ public class GameModeManager extends AppCompatActivity {
         b1 = findViewById(R.id.radioButton1);
         b2 = findViewById(R.id.radioButton2);
         b3 = findViewById(R.id.radioButton3);
+
 
         num = sharedPreferences.getInt("rowsAndCols", -1);
         if (num == 4)

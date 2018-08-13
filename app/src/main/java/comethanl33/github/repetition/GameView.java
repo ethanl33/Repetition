@@ -11,13 +11,14 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by Ethan on 6/6/2018.
  */
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private GameView gameView;
     private MainThread thread;
     private GameManager gameManager;
     private SurfaceHolder surfaceHolder;
@@ -33,6 +34,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int cols;
 
     private int rowsAndCols;
+
+
 
     public GameView(Context context) {
         super(context);
@@ -157,10 +160,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             try {
-                thread.sleep(260);// 1000 milliseconds is one second.
+                thread.sleep(270);// 1000 milliseconds is one second.
             } catch (InterruptedException ex) {
                 thread.currentThread().interrupt();
             }
+
 
             try {
                 gameManager.draw(canvas);

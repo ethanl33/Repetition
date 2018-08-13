@@ -1,15 +1,14 @@
 package comethanl33.github.repetition;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 
 /**
@@ -52,6 +51,8 @@ public class GameManager extends Activity{
     private float[] coordinates = new float[4];
 
 
+
+
     public GameManager(int cols, int rows, int r, int g, int b) {
         numColumns = cols;
         numRows = rows;
@@ -87,6 +88,8 @@ public class GameManager extends Activity{
         //drawing the score on the game screen
         background.setTextSize(37);
         canvas.drawText("Level:" + level,100,50, background);
+
+
 
     }
 
